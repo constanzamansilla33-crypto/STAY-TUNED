@@ -926,3 +926,112 @@ footer {
         flex: 1;
     }
 }
+
+.cuenta-pagina {
+    min-height: 75vh;
+    padding: 50px 6%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.cuenta-container {
+    width: 100%;
+    max-width: 550px;
+    padding: 35px;
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    border-radius: 20px;
+}
+
+.cuenta-container h1 {
+    font-size: 30px;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.cuenta-container > p {
+    color: var(--gris);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.campo-cuenta {
+    margin-bottom: 20px;
+}
+
+.campo-cuenta label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.campo-cuenta input {
+    width: 100%;
+    padding: 14px;
+    background: var(--fondo);
+    color: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.campo-cuenta input:focus {
+    outline: 2px solid var(--rojo);
+    outline-offset: 1px;
+}
+
+.campo-cuenta small {
+    display: block;
+    color: var(--gris);
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.campo-cuenta ul {
+    padding-left: 18px;
+}
+
+.error-campo,
+.formulario-cuenta .errorlist {
+    color: var(--rojo);
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+.boton-cuenta {
+    width: 100%;
+    padding: 16px;
+    background: var(--rojo);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 900;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.boton-cuenta:hover {
+    background: var(--blanco);
+    color: var(--fondo);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+    .cuenta-pagina {
+        padding: 30px 5%;
+    }
+
+    .cuenta-container {
+        padding: 25px 20px;
+    }
+
+    .cuenta-container h1 {
+        font-size: 25px;
+    }
+}

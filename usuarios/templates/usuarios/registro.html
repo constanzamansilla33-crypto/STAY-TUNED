@@ -1,0 +1,41 @@
+{% extends "eventos/base.html" %}
+
+{% block titulo %}Registro | STAY TUNED{% endblock %}
+
+{% block contenido %}
+
+<section class="cuenta-pagina">
+    <div class="cuenta-container">
+
+        <h1>CREÁ TU CUENTA</h1>
+        <p>Sumate a STAY TUNED.</p>
+
+        <form method="POST" class="formulario-cuenta">
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+            {% for campo in form %}
+                <div class="campo-cuenta">
+                    {{ campo.label_tag }}
+                    {{ campo }}
+
+                    {% if campo.help_text %}
+                        <small>{{ campo.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in campo.errors %}
+                        <p class="error-campo">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="boton-cuenta">
+                CREAR CUENTA
+            </button>
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}
