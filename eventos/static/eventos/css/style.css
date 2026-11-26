@@ -1251,3 +1251,59 @@ footer {
     color: var(--rojo);
     font-weight: 600;
 }
+
+#seccion-medicamentos {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#lista-medicamentos {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.tarjeta-medicamento {
+    background: var(--fondo);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.encabezado-medicamento {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.titulo-medicamento {
+    font-size: 16px;
+    color: var(--blanco);
+    margin: 0;
+}
+
+.boton-quitar-medicamento {
+    background: transparent;
+    border: 1px solid var(--rojo);
+    color: var(--rojo);
+    padding: 6px 12px;
+    border-radius: 7px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.boton-quitar-medicamento:hover {
+    background: var(--rojo);
+    color: #FFFFFF;
+}
+
+.credencial-container [hidden] {
+    display: none !important;
+}

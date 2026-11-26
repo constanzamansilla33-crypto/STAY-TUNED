@@ -1,15 +1,18 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import CredencialMedica
+from django.forms import inlineformset_factory
+from .models import CredencialMedica, Medicamento
 import re
 
 
 class RegistroForm(UserCreationForm):
+
     email = forms.EmailField(required=True)
 
     class Meta:
         model = User
+
         fields = [
             'username',
             'first_name',
@@ -26,13 +29,12 @@ class CredencialMedicaForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         for nombre in [
-        'contacto_principal_vinculo',
-        'contacto_secundario_vinculo'
+            'contacto_principal_vinculo',
+            'contacto_secundario_vinculo'
         ]:
-        
             self.fields[nombre].choices = [
-            ('', 'Seleccioná un vínculo')
-        ] + CredencialMedica.VINCULOS
+                ('', 'Seleccioná un vínculo')
+            ] + CredencialMedica.VINCULOS
 
     class Meta:
         model = CredencialMedica
@@ -44,9 +46,6 @@ class CredencialMedicaForm(forms.ModelForm):
             'tiene_condiciones_medicas',
             'condiciones_medicas',
             'toma_medicacion',
-            'medicacion_habitual',
-            'dosis_medicacion',
-            'frecuencia_medicacion',
             'informacion_adicional',
             'contacto_principal_nombre',
             'contacto_principal_vinculo',
@@ -65,9 +64,6 @@ class CredencialMedicaForm(forms.ModelForm):
             'tiene_condiciones_medicas': '¿Tenés alguna condición médica?',
             'condiciones_medicas': 'Especificá tus condiciones médicas',
             'toma_medicacion': '¿Tomás medicación habitual?',
-            'medicacion_habitual': 'Nombre de los medicamentos',
-            'dosis_medicacion': 'Dosis prescritas',
-            'frecuencia_medicacion': 'Frecuencias prescritas',
             'informacion_adicional': 'Información adicional que te gustaría que sepamos',
             'contacto_principal_nombre': 'Nombre',
             'contacto_principal_vinculo': 'Vínculo',
@@ -82,9 +78,6 @@ class CredencialMedicaForm(forms.ModelForm):
         widgets = {
             'alergias': forms.Textarea(attrs={'rows': 2}),
             'condiciones_medicas': forms.Textarea(attrs={'rows': 2}),
-            'medicacion_habitual': forms.Textarea(attrs={'rows': 2}),
-            'dosis_medicacion': forms.Textarea(attrs={'rows': 2}),
-            'frecuencia_medicacion': forms.Textarea(attrs={'rows': 2}),
             'informacion_adicional': forms.Textarea(attrs={'rows': 3}),
             'contacto_principal_telefono': forms.TextInput(
                 attrs={'type': 'tel'}
@@ -119,7 +112,7 @@ class CredencialMedicaForm(forms.ModelForm):
         return self.validar_telefono(
             self.cleaned_data['contacto_secundario_telefono']
         )
-        
+
     def clean(self):
         datos = super().clean()
 
@@ -135,25 +128,6 @@ class CredencialMedicaForm(forms.ModelForm):
                 self.add_error(
                     'condiciones_medicas',
                     'Especificá tus condiciones médicas.'
-                )
-
-        if datos.get('toma_medicacion') == 'si':
-            if not datos.get('medicacion_habitual'):
-                self.add_error(
-                    'medicacion_habitual',
-                    'Indicá el nombre de los medicamentos.'
-                )
-
-            if not datos.get('dosis_medicacion'):
-                self.add_error(
-                    'dosis_medicacion',
-                    'Indicá las dosis prescritas o escribí Desconocido.'
-                )
-
-            if not datos.get('frecuencia_medicacion'):
-                self.add_error(
-                    'frecuencia_medicacion',
-                    'Indicá las frecuencias prescritas o escribí Desconocido.'
                 )
 
         if datos.get('contacto_principal_vinculo') == 'otro':
@@ -181,7 +155,7 @@ class CredencialMedicaForm(forms.ModelForm):
                     'Seleccioná un vínculo.'
                 )
 
-            if not telefono:
+            if not telefono and 'contacto_secundario_telefono' not in self.errors:
                 self.add_error(
                     'contacto_secundario_telefono',
                     'Ingresá el teléfono.'
@@ -199,11 +173,6 @@ class CredencialMedicaForm(forms.ModelForm):
         if datos.get('tiene_condiciones_medicas') != 'si':
             datos['condiciones_medicas'] = ''
 
-        if datos.get('toma_medicacion') != 'si':
-            datos['medicacion_habitual'] = ''
-            datos['dosis_medicacion'] = ''
-            datos['frecuencia_medicacion'] = ''
-
         if datos.get('contacto_principal_vinculo') != 'otro':
             datos['contacto_principal_otro_vinculo'] = ''
 
@@ -211,3 +180,39 @@ class CredencialMedicaForm(forms.ModelForm):
             datos['contacto_secundario_otro_vinculo'] = ''
 
         return datos
+
+
+class MedicamentoForm(forms.ModelForm):
+
+    class Meta:
+        model = Medicamento
+
+        fields = [
+            'nombre',
+            'dosis_frecuencia',
+        ]
+
+        labels = {
+            'nombre': 'Nombre del medicamento',
+            'dosis_frecuencia': 'Dosis y frecuencia prescritas',
+        }
+
+        widgets = {
+            'dosis_frecuencia': forms.Textarea(
+                attrs={
+                    'rows': 2,
+                    'placeholder': 'Según indicación médica o Desconocido'
+                }
+            ),
+        }
+
+
+MedicamentoFormSet = inlineformset_factory(
+    CredencialMedica,
+    Medicamento,
+    form=MedicamentoForm,
+    extra=0,
+    can_delete=True,
+    max_num=20,
+    validate_max=True
+)

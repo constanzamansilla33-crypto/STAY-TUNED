@@ -14,17 +14,18 @@
 
             {% csrf_token %}
 
-{% if form.errors %}
-    <div class="alerta-formulario" role="alert">
-        <strong>No pudimos guardar tu credencial.</strong>
-        <p>
-            Revisá los campos marcados en rojo
-            e intentá nuevamente.
-        </p>
-    </div>
-{% endif %}
+            {% if form.errors or formset.total_error_count %}
+                <div class="alerta-formulario" role="alert">
+                    <strong>No pudimos guardar tu credencial.</strong>
+                    <p>
+                        Revisá los campos marcados en rojo
+                        e intentá nuevamente.
+                    </p>
+                </div>
+            {% endif %}
 
-{{ form.non_field_errors }}
+            {{ form.non_field_errors }}
+            {{ formset.management_form }}
 
             {% for campo in form %}
 
@@ -53,7 +54,7 @@
                 {% endif %}
 
                 <div class="campo-cuenta {% if campo.errors %}campo-invalido{% endif %}"
-     id="campo-{{ campo.name }}">
+                     id="campo-{{ campo.name }}">
 
                     {{ campo.label_tag }}
                     {{ campo }}
@@ -63,6 +64,79 @@
                     {% endfor %}
 
                 </div>
+
+                {% if campo.name == 'toma_medicacion' %}
+
+                    <div id="seccion-medicamentos">
+
+                        {% for error in formset.non_form_errors %}
+                            <p class="error-campo">{{ error }}</p>
+                        {% endfor %}
+
+                        <div id="lista-medicamentos">
+
+                            {% for medicamento in formset %}
+
+                                <div class="tarjeta-medicamento">
+
+                                    {% for oculto in medicamento.hidden_fields %}
+                                        {{ oculto }}
+
+                                        {% for error in oculto.errors %}
+                                            <p class="error-campo">{{ error }}</p>
+                                        {% endfor %}
+                                    {% endfor %}
+
+                                    {{ medicamento.non_field_errors }}
+
+                                    <div class="encabezado-medicamento">
+                                        <h3 class="titulo-medicamento">
+                                            Medicamento
+                                        </h3>
+
+                                        <button type="button"
+                                                class="boton-quitar-medicamento">
+                                            Quitar
+                                        </button>
+                                    </div>
+
+                                    <div class="campo-cuenta {% if medicamento.nombre.errors %}campo-invalido{% endif %}">
+                                        {{ medicamento.nombre.label_tag }}
+                                        {{ medicamento.nombre }}
+
+                                        {% for error in medicamento.nombre.errors %}
+                                            <p class="error-campo">{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="campo-cuenta {% if medicamento.dosis_frecuencia.errors %}campo-invalido{% endif %}">
+                                        {{ medicamento.dosis_frecuencia.label_tag }}
+                                        {{ medicamento.dosis_frecuencia }}
+
+                                        {% for error in medicamento.dosis_frecuencia.errors %}
+                                            <p class="error-campo">{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div hidden>
+                                        {{ medicamento.DELETE }}
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                        <button type="button"
+                                id="agregar-medicamento"
+                                class="boton-agregar-contacto">
+                            + Agregar medicamento
+                        </button>
+
+                    </div>
+
+                {% endif %}
 
             {% endfor %}
 
@@ -80,6 +154,43 @@
 
     </div>
 </section>
+
+<template id="plantilla-medicamento">
+
+    <div class="tarjeta-medicamento">
+
+        {% for oculto in formset.empty_form.hidden_fields %}
+            {{ oculto }}
+        {% endfor %}
+
+        <div class="encabezado-medicamento">
+            <h3 class="titulo-medicamento">
+                Medicamento
+            </h3>
+
+            <button type="button"
+                    class="boton-quitar-medicamento">
+                Quitar
+            </button>
+        </div>
+
+        <div class="campo-cuenta">
+            {{ formset.empty_form.nombre.label_tag }}
+            {{ formset.empty_form.nombre }}
+        </div>
+
+        <div class="campo-cuenta">
+            {{ formset.empty_form.dosis_frecuencia.label_tag }}
+            {{ formset.empty_form.dosis_frecuencia }}
+        </div>
+
+        <div hidden>
+            {{ formset.empty_form.DELETE }}
+        </div>
+
+    </div>
+
+</template>
 
 {% endblock %}
 
@@ -126,15 +237,154 @@
         "condiciones_medicas"
     ]);
 
-    controlarCampos("toma_medicacion", "si", [
-        "medicacion_habitual",
-        "dosis_medicacion",
-        "frecuencia_medicacion"
-    ]);
-
     controlarCampos("contacto_principal_vinculo", "otro", [
         "contacto_principal_otro_vinculo"
     ]);
+
+    const selectorMedicacion = document.getElementById(
+        "id_toma_medicacion"
+    );
+
+    const seccionMedicamentos = document.getElementById(
+        "seccion-medicamentos"
+    );
+
+    const listaMedicamentos = document.getElementById(
+        "lista-medicamentos"
+    );
+
+    const botonMedicamento = document.getElementById(
+        "agregar-medicamento"
+    );
+
+    const plantillaMedicamento = document.getElementById(
+        "plantilla-medicamento"
+    );
+
+    const totalFormularios = document.getElementById(
+        "id_{{ formset.prefix }}-TOTAL_FORMS"
+    );
+
+    function numerarMedicamentos() {
+        let numero = 1;
+
+        listaMedicamentos.querySelectorAll(
+            ".tarjeta-medicamento"
+        ).forEach(function (tarjeta) {
+
+            if (!tarjeta.hidden) {
+                tarjeta.querySelector(
+                    ".titulo-medicamento"
+                ).textContent = "Medicamento " + numero;
+
+                numero++;
+            }
+        });
+    }
+
+    function agregarMedicamento() {
+        const indice = Number(totalFormularios.value);
+
+        if (indice >= 20) {
+            alert("Alcanzaste el límite de formularios. Guardá los cambios antes de agregar más.");
+            return;
+        }
+
+        const contenido = plantillaMedicamento.innerHTML.replace(
+            /__prefix__/g,
+            indice
+        );
+
+        listaMedicamentos.insertAdjacentHTML(
+            "beforeend",
+            contenido
+        );
+
+        totalFormularios.value = indice + 1;
+
+        numerarMedicamentos();
+    }
+
+    function actualizarMedicamentos() {
+        seccionMedicamentos.hidden =
+            selectorMedicacion.value !== "si";
+
+        if (selectorMedicacion.value === "si") {
+            const visibles = listaMedicamentos.querySelectorAll(
+                ".tarjeta-medicamento:not([hidden])"
+            );
+
+            if (visibles.length === 0) {
+                agregarMedicamento();
+            }
+        }
+    }
+
+    listaMedicamentos.addEventListener(
+        "click",
+        function (evento) {
+
+            const boton = evento.target.closest(
+                ".boton-quitar-medicamento"
+            );
+
+            if (!boton) {
+                return;
+            }
+
+            const tarjeta = boton.closest(
+                ".tarjeta-medicamento"
+            );
+
+            const eliminar = tarjeta.querySelector(
+                'input[name$="-DELETE"]'
+            );
+
+            eliminar.checked = true;
+            tarjeta.hidden = true;
+
+            numerarMedicamentos();
+        }
+    );
+
+    listaMedicamentos.querySelectorAll(
+        ".tarjeta-medicamento"
+    ).forEach(function (tarjeta) {
+
+        const eliminar = tarjeta.querySelector(
+            'input[name$="-DELETE"]'
+        );
+
+        if (eliminar && eliminar.checked) {
+            tarjeta.hidden = true;
+        }
+    });
+
+    botonMedicamento.addEventListener(
+        "click",
+        agregarMedicamento
+    );
+
+    selectorMedicacion.addEventListener(
+        "change",
+        actualizarMedicamentos
+    );
+
+    document.querySelector(
+        ".formulario-cuenta"
+    ).addEventListener("submit", function () {
+
+        if (selectorMedicacion.value !== "si") {
+            listaMedicamentos.querySelectorAll(
+                'input[name$="-DELETE"]'
+            ).forEach(function (campo) {
+                campo.checked = true;
+            });
+        }
+    });
+
+    actualizarMedicamentos();
+    numerarMedicamentos();
 
     const camposSegundoContacto = [
         "contacto_secundario_nombre",
@@ -198,11 +448,13 @@
         actualizarSegundoContacto
     );
 
-        actualizarSegundoContacto();
+    actualizarSegundoContacto();
 
-    const primerError = document.querySelector(
-        ".campo-invalido:not([hidden])"
-    );
+    const primerError = Array.from(
+        document.querySelectorAll(".campo-invalido")
+    ).find(function (campo) {
+        return !campo.closest("[hidden]");
+    });
 
     if (primerError) {
         primerError.scrollIntoView({

@@ -67,10 +67,6 @@ class CredencialMedica(models.Model):
         default='no_informado'
     )
 
-    medicacion_habitual = models.TextField(blank=True)
-    dosis_medicacion = models.TextField(blank=True)
-    frecuencia_medicacion = models.TextField(blank=True)
-
     informacion_adicional = models.TextField(blank=True)
 
     contacto_principal_nombre = models.CharField(
@@ -118,3 +114,18 @@ class CredencialMedica(models.Model):
 
     def __str__(self):
         return f"Credencial médica de {self.usuario.username}"
+    
+class Medicamento(models.Model):
+
+    credencial = models.ForeignKey(
+        CredencialMedica,
+        on_delete=models.CASCADE,
+        related_name='medicamentos'
+    )
+
+    nombre = models.CharField(max_length=150)
+
+    dosis_frecuencia = models.TextField(max_length=500)
+
+    def __str__(self):
+        return self.nombre
