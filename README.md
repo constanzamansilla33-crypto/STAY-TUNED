@@ -7,7 +7,7 @@ En tu próximo concierto, STAY TUNED.
 
 STAY TUNED es una plataforma web diseñada para mejorar la experiencia, la orientación y la seguridad de los asistentes a conciertos y eventos musicales.
 
-El proyecto fue desarrollado como trabajo práctico final de la Tecnicatura Superior en Desarrollo de Software del ISET N.º 25 Beppo Levi, durante el año 2026.
+El proyecto fue desarrollado como trabajo práctico final de Programación I, dentro de la Tecnicatura Superior en Desarrollo de Software del ISET N.º 25 Beppo Levi, durante el año 2026.
 
 ## Funcionalidades principales
 
