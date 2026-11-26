@@ -1,0 +1,243 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ evento.nombre }} | STAY TUNED</title>
+
+    <link rel="manifest" href="{% static 'eventos/manifest.json' %}">
+    <meta name="theme-color" content="#0B0B0F">
+
+    <link rel="stylesheet" href="{% static 'eventos/css/style.css' %}?v=2">
+</head>
+<body>
+
+    {% include "eventos/navbar.html" %}
+
+    <main>
+        <section class="seccion">
+            <h1>{{ evento.nombre }}</h1>
+
+            {% if evento.imagen %}
+                <img
+                    src="{{ evento.imagen.url }}"
+                    alt="{{ evento.nombre }}"
+                    class="imagen-detalle"
+                >
+            {% endif %}
+
+            <h2>{{ evento.artista }}</h2>
+
+            <p>
+    {% if evento.fecha %}
+        {{ evento.fecha|date:"j" }} de {{ evento.fecha|date:"F" }} de {{ evento.fecha|date:"Y" }}
+    {% else %}
+        Fecha a confirmar
+    {% endif %}
+    |
+    {% if evento.hora %}
+        {{ evento.hora|time:"H:i" }} hs.
+    {% else %}
+        Horario a confirmar
+    {% endif %}
+</p>
+
+            <div class="informacion-lugar">
+    <p>{% if evento.lugar %}{{ evento.lugar }}{% else %}Lugar a confirmar{% endif %}{% if evento.ciudad %}, {{ evento.ciudad }}{% endif %}{% if evento.pais %}, {{ evento.pais }}{% endif %}</p>
+
+    {% if evento.mapa_url %}
+        <a href="{{ evento.mapa_url }}" target="_blank" rel="noopener noreferrer">
+            Ver ubicación en Google Maps
+        </a>
+    {% endif %}
+</div>
+            
+            <br>
+            <div class="descripcion-evento">
+    {{ evento.descripcion|linebreaks }}
+            </div>
+            </br>
+
+            <h2>Setlist</h2>
+
+            {% if evento.canciones_setlist %}
+    <ol class="lista-setlist">
+        {% for cancion in evento.canciones_setlist %}
+            <li>{{ cancion }}</li>
+        {% endfor %}
+    </ol>
+{% else %}
+    <p>La setlist estará disponible pronto.</p>
+{% endif %}
+
+        </section>
+    </main>
+
+<section class="asistencia-destacada">
+    <div class="asistencia-contenido">
+        <div class="asistencia-icono">✚</div>
+
+        <div class="asistencia-texto">
+            <h2>¿Necesitás ayuda?</h2>
+            <p>
+                Si necesitás asistencia durante el evento,
+                nuestro equipo está para ayudarte.
+            </p>
+        </div>
+    </div>
+
+    <a href="{% url 'solicitar_asistencia' evento.pk %}"
+       class="boton-asistencia">
+        Solicitar asistencia
+        <span>→</span>
+    </a>
+</section>
+
+   <section class="mapa-recinto">
+
+    <div class="mapa-encabezado">
+
+        <h2>Mapa del recinto</h2>
+        <p>Consultá la distribución del estadio y sus servicios.</p>
+    </div>
+
+    {% if evento.plano %}
+
+        <div class="plano-contenedor"
+     style="width: 100%; max-width: 760px; margin: 0 auto; overflow: hidden;">
+
+            <img
+    src="{{ evento.plano.url }}"
+    alt="Plano del recinto"
+    class="plano-imagen"
+    style="display: block; width: 100%; max-width: 760px; height: auto; margin: 0 auto; object-fit: contain;"
+>
+
+            {% for sector in evento.sectores.all %}
+                {% if sector.posicion_x != None and sector.posicion_y != None %}
+                    <div class="punto-mapa punto-sector"
+                         style="left: {{ sector.posicion_x }}%; top: {{ sector.posicion_y }}%;"
+                         title="{{ sector.nombre }}">
+                        {{ sector.nombre }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {% for servicio in evento.servicios.all %}
+                {% if servicio.posicion_x != None and servicio.posicion_y != None %}
+                    <div class="punto-mapa punto-servicio"
+                         style="left: {{ servicio.posicion_x }}%; top: {{ servicio.posicion_y }}%;"
+                         title="{{ servicio.nombre }}">
+                        {{ servicio.nombre }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p class="mapa-sin-plano">
+            El mapa del recinto estará disponible próximamente.
+        </p>
+
+    {% endif %}
+
+</section>
+
+    {% if evento.fecha %}
+    <div class="cuenta-regresiva">
+        <div class="contador" id="cuenta-regresiva"
+            data-fecha="{{ evento.fecha|date:'Y-m-d' }}"
+            data-hora="{% if evento.hora %}{{ evento.hora|time:'H:i:s' }}{% else %}00:00:00{% endif %}">
+            <div><span id="dias">00</span><small>DÍAS</small></div>
+            <div><span id="horas">00</span><small>HORAS</small></div>
+            <div><span id="minutos">00</span><small>MIN</small></div>
+            <div><span id="segundos">00</span><small>SEG</small></div>
+        </div>
+        <h2>
+            {% if evento.hora %}
+                PARA DISFRUTAR DEL SHOW
+            {% else %}
+                PARA EL DÍA DEL SHOW
+            {% endif %}
+        </h2>
+    </div>
+{% else %}
+    <div class="cuenta-regresiva">
+        <p>La cuenta regresiva se mostrará pronto.</p>
+    </div>
+{% endif %}
+
+    <script>
+    const contador = document.getElementById("cuenta-regresiva");
+
+    if (contador && contador.dataset.fecha) {
+        const fecha = contador.dataset.fecha;
+        const hora = contador.dataset.hora || "00:00:00";
+        const fechaEvento = new Date(`${fecha}T${hora}-03:00`).getTime();
+        const tieneHora = hora !== "00:00:00";
+
+        function actualizarCuenta() {
+            const ahora = new Date().getTime();
+            const diferencia = fechaEvento - ahora;
+
+            if (diferencia <= 0) {
+                contador.innerHTML = tieneHora
+                    ? "<p>¡EL EVENTO YA COMENZÓ!</p>"
+                    : "<p>¡LLEGÓ EL DÍA DEL SHOW!</p>";
+                return;
+            }
+
+            document.getElementById("dias").textContent =
+                Math.floor(diferencia / (1000 * 60 * 60 * 24));
+
+            document.getElementById("horas").textContent =
+                Math.floor((diferencia / (1000 * 60 * 60)) % 24);
+
+            document.getElementById("minutos").textContent =
+                Math.floor((diferencia / (1000 * 60)) % 60);
+
+            document.getElementById("segundos").textContent =
+                Math.floor((diferencia / 1000) % 60);
+        }
+
+        actualizarCuenta();
+        setInterval(actualizarCuenta, 1000);
+    }
+</script>
+
+    {% include "eventos/footer.html" %}
+
+    <script>
+    const botonTema = document.getElementById("cambiar-tema");
+    const temaGuardado = localStorage.getItem("tema");
+
+    if (botonTema) {
+
+    if (temaGuardado === "claro") {
+        document.documentElement.setAttribute("data-tema", "claro");
+        botonTema.textContent = "⏾";
+    }
+
+    botonTema.addEventListener("click", function () {
+        const temaActual = document.documentElement.getAttribute("data-tema");
+
+        if (temaActual === "claro") {
+            document.documentElement.removeAttribute("data-tema");
+            botonTema.textContent = "☼";
+            localStorage.setItem("tema", "oscuro");
+        } else {
+            document.documentElement.setAttribute("data-tema", "claro");
+            botonTema.textContent = "⏾";
+            localStorage.setItem("tema", "claro");
+        }
+    });
+
+}
+</script>
+
+</body>
+</html>

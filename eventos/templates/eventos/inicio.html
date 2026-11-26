@@ -1,0 +1,139 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>STAY TUNED</title>
+
+    <link rel="manifest" href="{% static 'eventos/manifest.json' %}">
+    <meta name="theme-color" content="#0B0B0F">
+
+    <link rel="stylesheet" href="{% static 'eventos/css/style.css' %}">
+</head>
+<body>
+
+    {% include "eventos/navbar.html" %}
+
+    <main>
+        <section class="bienvenida" id="inicio">
+            <h1>Disfruta el show.<br><span>Nosotros nos encargamos</span></h1>
+            <p class="descripcion">
+                Los conciertos son momentos para disfrutar, compartir y crear recuerdos que nos acompañarán por siempre. Nosotros estamos para que vos solo te encargues de vivir el mejor momento de tu vida. Con STAY TUNED, siempre tendrás apoyo cuando lo necesites. STAY TUNED es una plataforma diseñada para mejorar la seguridad y la experiencia para vos y para quienes te acompañan. Reunimos en un solo lugar todo lo que necesitas saber para vivir el show al máximo. 
+                <br>
+                En tu próximo concierto, STAY TUNED.
+                </br>
+            </p>
+
+            <a href="#eventos" class="boton-principal">Explorar eventos</a>
+        </section>
+
+        <section class="seccion" id="eventos">
+    <h2>Próximos eventos</h2>
+    <p>Descubrí lo que está por venir.</p>
+
+    <div class="lista-eventos">
+        {% for evento in eventos %}
+           <article class="tarjeta-evento">
+
+    {% if evento.imagen %}
+        <img src="{{ evento.imagen.url }}" alt="{{ evento.nombre }}">
+    {% endif %}
+
+    <h3>{{ evento.nombre }}</h3>
+    <p>{{ evento.artista }}</p>
+    <p>
+    {% if evento.fecha %}
+        {{ evento.fecha|date:"j" }} de {{ evento.fecha|date:"F" }} de {{ evento.fecha|date:"Y" }}
+    {% else %}
+        Fecha a confirmar
+    {% endif %}
+    |
+    {% if evento.hora %}
+        {{ evento.hora|time:"H:i" }} hs.
+    {% else %}
+        Horario a confirmar
+    {% endif %}
+</p>
+
+<p>{% if evento.lugar %}{{ evento.lugar }}{% else %}Lugar a confirmar{% endif %}{% if evento.ciudad %}, {{ evento.ciudad }}{% endif %}{% if evento.pais %}, {{ evento.pais }}{% endif %}</p>
+
+<a href="{% url 'detalle_evento' evento.pk %}" class="boton-principal">
+    Ver detalles
+</a>
+
+</article>
+        {% empty %}
+            <p class="sin-eventos">
+                Todavía no hay eventos disponibles.
+            </p>
+        {% endfor %}
+    </div>
+</section>
+
+    </main>
+
+   {% include "eventos/footer.html" %}
+
+    <script>
+    const botonTema = document.getElementById("cambiar-tema");
+    const temaGuardado = localStorage.getItem("tema");
+
+    if (temaGuardado === "claro") {
+        document.documentElement.setAttribute("data-tema", "claro");
+        botonTema.textContent = "☾︎";
+    }
+
+    botonTema.addEventListener("click", function () {
+        const temaActual = document.documentElement.getAttribute("data-tema");
+
+        if (temaActual === "claro") {
+            document.documentElement.removeAttribute("data-tema");
+            botonTema.textContent = "☼︎";
+            localStorage.setItem("tema", "oscuro");
+        } else {
+            document.documentElement.setAttribute("data-tema", "claro");
+            botonTema.textContent = "☾︎";
+            localStorage.setItem("tema", "claro");
+        }
+    });
+</script>
+
+<script>
+    const enlacesInicio = [
+    document.getElementById("boton-inicio"),
+    document.getElementById("boton-logo")
+];
+
+enlacesInicio.forEach(function(enlace) {
+    enlace.addEventListener("click", function(event) {
+        if (window.location.pathname === "{% url 'inicio' %}" && window.scrollY > 0) {
+            event.preventDefault();
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+    });
+});
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/service-worker.js")
+            .then(function (registration) {
+                console.log("Service Worker registrado:", registration.scope);
+            })
+            .catch(function (error) {
+                console.error("Error al registrar el Service Worker:", error);
+            });
+    });
+}
+</script>
+
+</body>
+</html>
