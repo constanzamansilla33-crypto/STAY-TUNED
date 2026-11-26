@@ -40,7 +40,7 @@ def solicitar_asistencia(request, pk):
 
             messages.success(
                 request,
-                '¡Tu solicitud fue enviada correctamente! Aguarde con calma, un miembro del staff se acercará a asistirlo.'
+                '¡Su solicitud fue enviada correctamente! Aguarde con calma, un miembro del staff se acercará a asistirlo.'
             )
 
             return redirect('solicitar_asistencia', pk=evento.pk)

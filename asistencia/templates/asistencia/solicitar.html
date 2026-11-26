@@ -1,169 +1,129 @@
-{% load static %}
+{% extends "eventos/base.html" %}
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitar asistencia | STAY TUNED</title>
-    <link rel="stylesheet" href="{% static 'eventos/css/style.css' %}?v=3">
-</head>
+{% block titulo %}Solicitar asistencia | STAY TUNED{% endblock %}
 
-<body>
+{% block clase_main %}solicitud-pagina{% endblock %}
 
-    {% include "eventos/navbar.html" %}
+{% block contenido %}
 
-    <main class="solicitud-pagina">
+<section class="solicitud-container">
 
-        <section class="solicitud-container">
+    <div class="solicitud-encabezado">
+        <h1>¿QUÉ TIPO DE AYUDA NECESITÁS?</h1>
+        <p>
+            Seleccioná una opción y contanos brevemente qué sucede.
+            El personal del evento recibirá tu solicitud.
+        </p>
+    </div>
 
-            <div class="solicitud-encabezado">
-                <h1>¿QUÉ TIPO DE AYUDA NECESITÁS?</h1>
-                <p>
-                    Seleccioná una opción y contanos brevemente qué sucede.
-                    El personal del evento recibirá tu solicitud.
-                </p>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mensaje-solicitud {{ message.tags }}">
+                {{ message }}
             </div>
+        {% endfor %}
+    {% endif %}
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="mensaje-solicitud {{ message.tags }}">
-                        {{ message }}
-                    </div>
+    <form method="POST" class="formulario-asistencia">
+        {% csrf_token %}
+
+        <fieldset class="grupo-opciones">
+            <legend>Seleccioná el tipo de asistencia</legend>
+
+            <div class="opciones-asistencia">
+
+                {% for valor, nombre in tipos %}
+                    <label class="opcion-asistencia">
+
+                        <input
+                            type="radio"
+                            name="tipo"
+                            value="{{ valor }}"
+                            id="tipo-{{ valor }}"
+                            required
+                        >
+
+                        <span class="opcion-contenido">
+
+                            <span class="opcion-icono">
+                                {% if valor == 'medica' %}
+                                    ✚
+                                {% elif valor == 'seguridad' %}
+                                    🛡
+                                {% elif valor == 'orientacion' %}
+                                    📍
+                                {% else %}
+                                    ?
+                                {% endif %}
+                            </span>
+
+                            <span class="opcion-nombre">
+                                {{ nombre }}
+                            </span>
+
+                            <span class="opcion-descripcion">
+                                {% if valor == 'medica' %}
+                                    Necesito atención médica.
+                                {% elif valor == 'seguridad' %}
+                                    Necesito ayuda del personal de seguridad.
+                                {% elif valor == 'orientacion' %}
+                                    Necesito indicaciones o información.
+                                {% else %}
+                                    Necesito otro tipo de ayuda.
+                                {% endif %}
+                            </span>
+
+                            <span class="opcion-check">✓</span>
+
+                        </span>
+
+                    </label>
                 {% endfor %}
-            {% endif %}
 
-            <form method="POST" class="formulario-asistencia">
-                {% csrf_token %}
+            </div>
+        </fieldset>
 
-                <fieldset class="grupo-opciones">
-                    <legend>Seleccioná el tipo de asistencia</legend>
+        <div class="campo-asistencia">
+            <label for="sector">¿En qué sector te encontrás?</label>
 
-                    <div class="opciones-asistencia">
+            <select name="sector" id="sector">
+                <option value="">No estoy seguro/a</option>
 
-                        {% for valor, nombre in tipos %}
-                            <label class="opcion-asistencia">
+                {% for sector in sectores %}
+                    <option value="{{ sector.id }}">
+                        {{ sector.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
-                                <input
-                                    type="radio"
-                                    name="tipo"
-                                    value="{{ valor }}"
-                                    id="tipo-{{ valor }}"
-                                    required
-                                >
+        <div class="campo-asistencia">
+            <label for="descripcion">Descripción de la situación</label>
 
-                                <span class="opcion-contenido">
+            <textarea
+                name="descripcion"
+                id="descripcion"
+                rows="4"
+                placeholder="Contanos brevemente qué sucede..."
+            ></textarea>
 
-                                    <span class="opcion-icono">
-                                        {% if valor == 'medica' %}
-                                            ✚
-                                        {% elif valor == 'seguridad' %}
-                                            🛡
-                                        {% elif valor == 'orientacion' %}
-                                            📍
-                                        {% else %}
-                                            ?
-                                        {% endif %}
-                                    </span>
+            <small>
+                Si seleccionaste «Otro», describí qué tipo de ayuda necesitás.
+            </small>
+        </div>
 
-                                    <span class="opcion-nombre">
-                                        {{ nombre }}
-                                    </span>
+        <button type="submit" class="boton-enviar-asistencia">
+            ENVIAR SOLICITUD
+            <span>→</span>
+        </button>
 
-                                    <span class="opcion-descripcion">
-                                        {% if valor == 'medica' %}
-                                            Necesito atención médica.
-                                        {% elif valor == 'seguridad' %}
-                                            Necesito ayuda del personal de seguridad.
-                                        {% elif valor == 'orientacion' %}
-                                            Necesito indicaciones o información.
-                                        {% else %}
-                                            Necesito otro tipo de ayuda.
-                                        {% endif %}
-                                    </span>
+    </form>
 
-                                    <span class="opcion-check">✓</span>
+    <a href="{% url 'detalle_evento' evento.pk %}"
+       class="volver-evento">
+        ← Volver al evento
+    </a>
 
-                                </span>
+</section>
 
-                            </label>
-                        {% endfor %}
-
-                    </div>
-                </fieldset>
-
-                <div class="campo-asistencia">
-                    <label for="sector">¿En qué sector te encontrás?</label>
-
-                    <select name="sector" id="sector">
-                        <option value="">No estoy seguro/a</option>
-
-                        {% for sector in sectores %}
-                            <option value="{{ sector.id }}">
-                                {{ sector.nombre }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="campo-asistencia">
-                    <label for="descripcion">Descripción de la situación</label>
-
-                    <textarea
-                        name="descripcion"
-                        id="descripcion"
-                        rows="4"
-                        placeholder="Contanos brevemente qué sucede..."
-                    ></textarea>
-
-                    <small>
-                        Si seleccionaste «Otro», describí qué tipo de ayuda necesitás.
-                    </small>
-                </div>
-
-                <button type="submit" class="boton-enviar-asistencia">
-                    ENVIAR SOLICITUD
-                    <span>→</span>
-                </button>
-
-            </form>
-
-            <a href="{% url 'detalle_evento' evento.pk %}"
-               class="volver-evento">
-                ← Volver al evento
-            </a>
-
-        </section>
-
-    </main>
-
-    {% include "eventos/footer.html" %}
-
-    <script>
-    const botonTema = document.getElementById("cambiar-tema");
-    const temaGuardado = localStorage.getItem("tema");
-
-    if (temaGuardado === "claro") {
-        document.documentElement.setAttribute("data-tema", "claro");
-    }
-
-    if (botonTema) {
-        botonTema.addEventListener("click", function () {
-            const temaActual = document.documentElement.getAttribute("data-tema");
-
-            if (temaActual === "claro") {
-                document.documentElement.removeAttribute("data-tema");
-                botonTema.textContent = "☼";
-                localStorage.setItem("tema", "oscuro");
-            } else {
-                document.documentElement.setAttribute("data-tema", "claro");
-                botonTema.textContent = "⏾";
-                localStorage.setItem("tema", "claro");
-            }
-        });
-    }
-</script>
-
-
-</body>
-</html>
+{% endblock %}

@@ -1,79 +1,67 @@
-{% load static %}
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ evento.nombre }} | STAY TUNED</title>
+{% extends "eventos/base.html" %}
 
-    <link rel="manifest" href="{% static 'eventos/manifest.json' %}">
-    <meta name="theme-color" content="#0B0B0F">
+{% block titulo %}{{ evento.nombre }} | STAY TUNED{% endblock %}
 
-    <link rel="stylesheet" href="{% static 'eventos/css/style.css' %}?v=2">
-</head>
-<body>
+{% block contenido %}
 
-    {% include "eventos/navbar.html" %}
+<section class="seccion">
+    <h1>{{ evento.nombre }}</h1>
 
-    <main>
-        <section class="seccion">
-            <h1>{{ evento.nombre }}</h1>
+    {% if evento.imagen %}
+        <img
+            src="{{ evento.imagen.url }}"
+            alt="{{ evento.nombre }}"
+            class="imagen-detalle"
+        >
+    {% endif %}
 
-            {% if evento.imagen %}
-                <img
-                    src="{{ evento.imagen.url }}"
-                    alt="{{ evento.nombre }}"
-                    class="imagen-detalle"
-                >
-            {% endif %}
+    <h2>{{ evento.artista }}</h2>
 
-            <h2>{{ evento.artista }}</h2>
+    <p>
+        {% if evento.fecha %}
+            {{ evento.fecha|date:"j" }} de {{ evento.fecha|date:"F" }} de {{ evento.fecha|date:"Y" }}
+        {% else %}
+            Fecha a confirmar
+        {% endif %}
+        |
+        {% if evento.hora %}
+            {{ evento.hora|time:"H:i" }} hs.
+        {% else %}
+            Horario a confirmar
+        {% endif %}
+    </p>
 
-            <p>
-    {% if evento.fecha %}
-        {{ evento.fecha|date:"j" }} de {{ evento.fecha|date:"F" }} de {{ evento.fecha|date:"Y" }}
+    <div class="informacion-lugar">
+        <p>{% if evento.lugar %}{{ evento.lugar }}{% else %}Lugar a confirmar{% endif %}{% if evento.ciudad %}, {{ evento.ciudad }}{% endif %}{% if evento.pais %}, {{ evento.pais }}{% endif %}</p>
+
+        {% if evento.mapa_url %}
+            <a href="{{ evento.mapa_url }}" target="_blank" rel="noopener noreferrer">
+                Ver ubicación en Google Maps
+            </a>
+        {% endif %}
+    </div>
+
+    <br>
+
+    <div class="descripcion-evento">
+        {{ evento.descripcion|linebreaks }}
+    </div>
+
+    <br>
+
+    <h2>Setlist</h2>
+
+    {% if evento.canciones_setlist %}
+        <ol class="lista-setlist">
+            {% for cancion in evento.canciones_setlist %}
+                <li>{{ cancion }}</li>
+            {% endfor %}
+        </ol>
     {% else %}
-        Fecha a confirmar
+        <p>La setlist estará disponible pronto.</p>
     {% endif %}
-    |
-    {% if evento.hora %}
-        {{ evento.hora|time:"H:i" }} hs.
-    {% else %}
-        Horario a confirmar
-    {% endif %}
-</p>
-
-            <div class="informacion-lugar">
-    <p>{% if evento.lugar %}{{ evento.lugar }}{% else %}Lugar a confirmar{% endif %}{% if evento.ciudad %}, {{ evento.ciudad }}{% endif %}{% if evento.pais %}, {{ evento.pais }}{% endif %}</p>
-
-    {% if evento.mapa_url %}
-        <a href="{{ evento.mapa_url }}" target="_blank" rel="noopener noreferrer">
-            Ver ubicación en Google Maps
-        </a>
-    {% endif %}
-</div>
-            
-            <br>
-            <div class="descripcion-evento">
-    {{ evento.descripcion|linebreaks }}
-            </div>
-            </br>
-
-            <h2>Setlist</h2>
-
-            {% if evento.canciones_setlist %}
-    <ol class="lista-setlist">
-        {% for cancion in evento.canciones_setlist %}
-            <li>{{ cancion }}</li>
-        {% endfor %}
-    </ol>
-{% else %}
-    <p>La setlist estará disponible pronto.</p>
-{% endif %}
-
-        </section>
-    </main>
+</section>
 
 <section class="asistencia-destacada">
     <div class="asistencia-contenido">
@@ -95,10 +83,8 @@
     </a>
 </section>
 
-   <section class="mapa-recinto">
-
+<section class="mapa-recinto">
     <div class="mapa-encabezado">
-
         <h2>Mapa del recinto</h2>
         <p>Consultá la distribución del estadio y sus servicios.</p>
     </div>
@@ -106,14 +92,14 @@
     {% if evento.plano %}
 
         <div class="plano-contenedor"
-     style="width: 100%; max-width: 760px; margin: 0 auto; overflow: hidden;">
+             style="width: 100%; max-width: 760px; margin: 0 auto; overflow: hidden;">
 
             <img
-    src="{{ evento.plano.url }}"
-    alt="Plano del recinto"
-    class="plano-imagen"
-    style="display: block; width: 100%; max-width: 760px; height: auto; margin: 0 auto; object-fit: contain;"
->
+                src="{{ evento.plano.url }}"
+                alt="Plano del recinto"
+                class="plano-imagen"
+                style="display: block; width: 100%; max-width: 760px; height: auto; margin: 0 auto; object-fit: contain;"
+            >
 
             {% for sector in evento.sectores.all %}
                 {% if sector.posicion_x != None and sector.posicion_y != None %}
@@ -144,19 +130,21 @@
         </p>
 
     {% endif %}
-
 </section>
 
-    {% if evento.fecha %}
+{% if evento.fecha %}
     <div class="cuenta-regresiva">
         <div class="contador" id="cuenta-regresiva"
-            data-fecha="{{ evento.fecha|date:'Y-m-d' }}"
-            data-hora="{% if evento.hora %}{{ evento.hora|time:'H:i:s' }}{% else %}00:00:00{% endif %}">
+             data-fecha="{{ evento.fecha|date:'Y-m-d' }}"
+             data-hora="{% if evento.hora %}{{ evento.hora|time:'H:i:s' }}{% else %}00:00:00{% endif %}">
+
             <div><span id="dias">00</span><small>DÍAS</small></div>
             <div><span id="horas">00</span><small>HORAS</small></div>
             <div><span id="minutos">00</span><small>MIN</small></div>
             <div><span id="segundos">00</span><small>SEG</small></div>
+
         </div>
+
         <h2>
             {% if evento.hora %}
                 PARA DISFRUTAR DEL SHOW
@@ -171,7 +159,11 @@
     </div>
 {% endif %}
 
-    <script>
+{% endblock %}
+
+{% block scripts %}
+
+<script>
     const contador = document.getElementById("cuenta-regresiva");
 
     if (contador && contador.dataset.fecha) {
@@ -209,35 +201,4 @@
     }
 </script>
 
-    {% include "eventos/footer.html" %}
-
-    <script>
-    const botonTema = document.getElementById("cambiar-tema");
-    const temaGuardado = localStorage.getItem("tema");
-
-    if (botonTema) {
-
-    if (temaGuardado === "claro") {
-        document.documentElement.setAttribute("data-tema", "claro");
-        botonTema.textContent = "⏾";
-    }
-
-    botonTema.addEventListener("click", function () {
-        const temaActual = document.documentElement.getAttribute("data-tema");
-
-        if (temaActual === "claro") {
-            document.documentElement.removeAttribute("data-tema");
-            botonTema.textContent = "☼";
-            localStorage.setItem("tema", "oscuro");
-        } else {
-            document.documentElement.setAttribute("data-tema", "claro");
-            botonTema.textContent = "⏾";
-            localStorage.setItem("tema", "claro");
-        }
-    });
-
-}
-</script>
-
-</body>
-</html>
+{% endblock %}
