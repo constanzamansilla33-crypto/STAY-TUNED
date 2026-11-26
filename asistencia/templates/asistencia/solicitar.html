@@ -25,7 +25,17 @@
     {% endif %}
 
     <form method="POST" class="formulario-asistencia">
+
         {% csrf_token %}
+
+        {% if form.errors %}
+            <div class="alerta-formulario" role="alert">
+                <strong>No pudimos enviar tu solicitud.</strong>
+                <p>Revisá los campos indicados e intentá nuevamente.</p>
+            </div>
+        {% endif %}
+
+        {{ form.non_field_errors }}
 
         <fieldset class="grupo-opciones">
             <legend>Seleccioná el tipo de asistencia</legend>
@@ -40,6 +50,7 @@
                             name="tipo"
                             value="{{ valor }}"
                             id="tipo-{{ valor }}"
+                            {% if form.tipo.value == valor %}checked{% endif %}
                             required
                         >
 
@@ -81,23 +92,41 @@
                 {% endfor %}
 
             </div>
+
+            {% for error in form.tipo.errors %}
+                <p class="error-campo">{{ error }}</p>
+            {% endfor %}
+
         </fieldset>
 
-        <div class="campo-asistencia">
+        <div class="campo-asistencia {% if form.sector.errors %}campo-invalido{% endif %}">
+
             <label for="sector">¿En qué sector te encontrás?</label>
 
             <select name="sector" id="sector">
+
                 <option value="">No estoy seguro/a</option>
 
                 {% for sector in sectores %}
-                    <option value="{{ sector.id }}">
+                    <option value="{{ sector.id }}"
+                        {% if form.sector.value|stringformat:"s" == sector.id|stringformat:"s" %}
+                            selected
+                        {% endif %}
+                    >
                         {{ sector.nombre }}
                     </option>
                 {% endfor %}
+
             </select>
+
+            {% for error in form.sector.errors %}
+                <p class="error-campo">{{ error }}</p>
+            {% endfor %}
+
         </div>
 
-        <div class="campo-asistencia">
+        <div class="campo-asistencia {% if form.descripcion.errors %}campo-invalido{% endif %}">
+
             <label for="descripcion">Descripción de la situación</label>
 
             <textarea
@@ -105,11 +134,16 @@
                 id="descripcion"
                 rows="4"
                 placeholder="Contanos brevemente qué sucede..."
-            ></textarea>
+            >{{ form.descripcion.value|default_if_none:"" }}</textarea>
 
             <small>
                 Si seleccionaste «Otro», describí qué tipo de ayuda necesitás.
             </small>
+
+            {% for error in form.descripcion.errors %}
+                <p class="error-campo">{{ error }}</p>
+            {% endfor %}
+
         </div>
 
         <button type="submit" class="boton-enviar-asistencia">
