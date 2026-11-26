@@ -1307,3 +1307,56 @@ footer {
 .credencial-container [hidden] {
     display: none !important;
 }
+
+#eventos {
+    scroll-margin-top: 15px;
+}
+
+@media (max-width: 600px) {
+    #eventos {
+        scroll-margin-top: 70px;
+    }
+}
+
+.texto-movil {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .texto-escritorio {
+        display: none;
+    }
+
+    .texto-movil {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .encabezado {
+        padding: 15px 4%;
+        gap: 12px;
+    }
+
+    .navegacion {
+        gap: 12px;
+    }
+
+    .navegacion a {
+        font-size: 13px;
+    }
+
+    .boton-logout {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+    }
+
+    .boton-tema {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+    }
+}
