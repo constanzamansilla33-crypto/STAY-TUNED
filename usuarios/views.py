@@ -1,17 +1,14 @@
-from django.shortcuts import render
-
-# Create your views here.
-
 from django.shortcuts import render, redirect
+from django.contrib.auth import login
 from .forms import RegistroForm
-
 
 def registro(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            usuario = form.save()
+            login(request, usuario)
             return redirect('inicio')
     else:
         form = RegistroForm()

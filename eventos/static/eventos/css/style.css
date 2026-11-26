@@ -1035,3 +1035,50 @@ footer {
         font-size: 25px;
     }
 }
+
+.usuario-nav {
+    color: var(--blanco);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.boton-logout {
+    background: transparent;
+    color: var(--rojo);
+    border: 1px solid var(--rojo);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.boton-logout:hover {
+    background: var(--rojo);
+    color: #FFFFFF;
+}
+
+@media (max-width: 700px) {
+    .navegacion {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+}
+
+.enlace-cuenta {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.enlace-cuenta a {
+    color: var(--rojo);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.enlace-cuenta a:hover {
+    text-decoration: underline;
+}
