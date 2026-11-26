@@ -853,3 +853,76 @@ footer {
         padding-left: 3px;
     }
 }
+
+.buscador-eventos {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+    margin-top: 25px;
+}
+
+.buscador-eventos input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px 18px;
+    background: var(--superficie);
+    color: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.buscador-eventos input::placeholder {
+    color: var(--gris);
+}
+
+.buscador-eventos input:focus {
+    border-color: var(--rojo);
+}
+
+.buscador-eventos button {
+    padding: 14px 25px;
+    background: var(--verde);
+    color: #0B0B0F;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.buscador-eventos button:hover {
+    transform: translateY(-2px);
+}
+
+.limpiar-busqueda {
+    color: var(--gris);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.limpiar-busqueda:hover {
+    color: var(--rojo);
+}
+
+@media (max-width: 600px) {
+    .buscador-eventos {
+        gap: 8px;
+    }
+
+    .buscador-eventos input {
+        flex: 1 1 100%;
+    }
+
+    .buscador-eventos button {
+        flex: 1;
+    }
+}
