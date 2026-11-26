@@ -1,0 +1,31 @@
+{% extends "eventos/base.html" %}
+
+{% block titulo %}Mi perfil | STAY TUNED{% endblock %}
+
+{% block contenido %}
+
+<section class="cuenta-pagina">
+    <div class="cuenta-container">
+
+        <h1>MI PERFIL</h1>
+
+        <div class="perfil-datos">
+            <h2>{{ user.get_full_name|default:user.username }}</h2>
+
+            <p>@{{ user.username }}</p>
+
+            <div class="dato-perfil">
+                <strong>Correo electrónico</strong>
+                <p>{{ user.email|default:"Sin especificar" }}</p>
+            </div>
+
+            <div class="dato-perfil">
+                <strong>Miembro desde</strong>
+                <p>{{ user.date_joined|date:"d/m/Y" }}</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

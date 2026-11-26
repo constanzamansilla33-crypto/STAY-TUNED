@@ -6,9 +6,9 @@
         <a href="{% url 'inicio' %}#eventos" id="boton-eventos">Eventos</a>
 
         {% if user.is_authenticated %}
-            <span class="usuario-nav">
+            <a href="{% url 'perfil' %}" class="usuario-nav">
                 Hola, {{ user.first_name|default:user.username }}
-            </span>
+            </a>
         {% else %}
             <a href="{% url 'registro' %}">Registrarse</a>
         {% endif %}
