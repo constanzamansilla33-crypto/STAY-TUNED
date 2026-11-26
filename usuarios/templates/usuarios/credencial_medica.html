@@ -1,0 +1,215 @@
+{% extends "eventos/base.html" %}
+
+{% block titulo %}Credencial médica | STAY TUNED{% endblock %}
+
+{% block contenido %}
+
+<section class="cuenta-pagina">
+    <div class="cuenta-container credencial-container">
+
+        <h1>CREDENCIAL MÉDICA</h1>
+        <p>Tu información de emergencia, en un solo lugar.</p>
+
+        <form method="POST" class="formulario-cuenta">
+
+            {% csrf_token %}
+
+{% if form.errors %}
+    <div class="alerta-formulario" role="alert">
+        <strong>No pudimos guardar tu credencial.</strong>
+        <p>
+            Revisá los campos marcados en rojo
+            e intentá nuevamente.
+        </p>
+    </div>
+{% endif %}
+
+{{ form.non_field_errors }}
+
+            {% for campo in form %}
+
+                {% if campo.name == 'grupo_sanguineo' %}
+                    <h2 class="titulo-credencial">
+                        Información médica
+                    </h2>
+
+                {% elif campo.name == 'contacto_principal_nombre' %}
+                    <h2 class="titulo-credencial">
+                        Contacto de emergencia principal
+                    </h2>
+
+                {% elif campo.name == 'contacto_secundario_nombre' %}
+                    <button type="button"
+                            id="agregar-contacto"
+                            class="boton-agregar-contacto">
+                        + Agregar segundo contacto
+                    </button>
+
+                    <h2 class="titulo-credencial"
+                        id="titulo-segundo-contacto"
+                        hidden>
+                        Segundo contacto de emergencia
+                    </h2>
+                {% endif %}
+
+                <div class="campo-cuenta {% if campo.errors %}campo-invalido{% endif %}"
+     id="campo-{{ campo.name }}">
+
+                    {{ campo.label_tag }}
+                    {{ campo }}
+
+                    {% for error in campo.errors %}
+                        <p class="error-campo">{{ error }}</p>
+                    {% endfor %}
+
+                </div>
+
+            {% endfor %}
+
+            <button type="submit" class="boton-cuenta">
+                GUARDAR CREDENCIAL
+            </button>
+
+        </form>
+
+        <p class="enlace-cuenta">
+            <a href="{% url 'perfil' %}">
+                Volver a mi perfil
+            </a>
+        </p>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    function mostrarCampo(nombre, mostrar) {
+        const contenedor = document.getElementById(
+            "campo-" + nombre
+        );
+
+        contenedor.hidden = !mostrar;
+
+        contenedor.querySelectorAll(
+            "input, select, textarea"
+        ).forEach(function (campo) {
+            campo.disabled = !mostrar;
+        });
+    }
+
+    function controlarCampos(control, valor, campos) {
+        const selector = document.getElementById(
+            "id_" + control
+        );
+
+        function actualizar() {
+            campos.forEach(function (campo) {
+                mostrarCampo(
+                    campo,
+                    selector.value === valor
+                );
+            });
+        }
+
+        selector.addEventListener("change", actualizar);
+        actualizar();
+    }
+
+    controlarCampos("tiene_alergias", "si", [
+        "alergias"
+    ]);
+
+    controlarCampos("tiene_condiciones_medicas", "si", [
+        "condiciones_medicas"
+    ]);
+
+    controlarCampos("toma_medicacion", "si", [
+        "medicacion_habitual",
+        "dosis_medicacion",
+        "frecuencia_medicacion"
+    ]);
+
+    controlarCampos("contacto_principal_vinculo", "otro", [
+        "contacto_principal_otro_vinculo"
+    ]);
+
+    const camposSegundoContacto = [
+        "contacto_secundario_nombre",
+        "contacto_secundario_vinculo",
+        "contacto_secundario_otro_vinculo",
+        "contacto_secundario_telefono"
+    ];
+
+    const botonContacto = document.getElementById(
+        "agregar-contacto"
+    );
+
+    const tituloContacto = document.getElementById(
+        "titulo-segundo-contacto"
+    );
+
+    const vinculoSecundario = document.getElementById(
+        "id_contacto_secundario_vinculo"
+    );
+
+    let segundoContactoVisible = camposSegundoContacto.some(
+        function (nombre) {
+            const campo = document.getElementById(
+                "id_" + nombre
+            );
+
+            const contenedor = document.getElementById(
+                "campo-" + nombre
+            );
+
+            return campo.value !== "" ||
+                contenedor.querySelector(".error-campo") !== null;
+        }
+    );
+
+    function actualizarSegundoContacto() {
+        camposSegundoContacto.forEach(function (campo) {
+            mostrarCampo(campo, segundoContactoVisible);
+        });
+
+        mostrarCampo(
+            "contacto_secundario_otro_vinculo",
+            segundoContactoVisible &&
+            vinculoSecundario.value === "otro"
+        );
+
+        tituloContacto.hidden = !segundoContactoVisible;
+
+        botonContacto.textContent = segundoContactoVisible
+            ? "− Quitar segundo contacto"
+            : "+ Agregar segundo contacto";
+    }
+
+    botonContacto.addEventListener("click", function () {
+        segundoContactoVisible = !segundoContactoVisible;
+        actualizarSegundoContacto();
+    });
+
+    vinculoSecundario.addEventListener(
+        "change",
+        actualizarSegundoContacto
+    );
+
+        actualizarSegundoContacto();
+
+    const primerError = document.querySelector(
+        ".campo-invalido:not([hidden])"
+    );
+
+    if (primerError) {
+        primerError.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+</script>
+
+{% endblock %}

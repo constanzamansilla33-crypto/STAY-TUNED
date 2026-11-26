@@ -16,6 +16,23 @@ class CredencialMedica(models.Model):
         ('desconocido', 'Desconocido'),
     ]
 
+    RESPUESTAS = [
+        ('si', 'Sí'),
+        ('no', 'No'),
+        ('no_informado', 'No informado'),
+    ]
+
+    VINCULOS = [
+        ('madre', 'Madre'),
+        ('padre', 'Padre'),
+        ('hermano', 'Hermano/a'),
+        ('pareja', 'Pareja'),
+        ('amigo', 'Amigo/a'),
+        ('tutor', 'Tutor/a'),
+        ('familiar', 'Otro familiar'),
+        ('otro', 'Otro'),
+    ]
+
     usuario = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -25,17 +42,54 @@ class CredencialMedica(models.Model):
     grupo_sanguineo = models.CharField(
         max_length=12,
         choices=GRUPOS_SANGUINEOS,
-        default='desconocido',
-        blank=True
+        default='desconocido'
+    )
+
+    tiene_alergias = models.CharField(
+        max_length=15,
+        choices=RESPUESTAS,
+        default='no_informado'
     )
 
     alergias = models.TextField(blank=True)
-    condiciones_medicas = models.TextField(blank=True)
-    medicacion_habitual = models.TextField(blank=True)
 
-    contacto_principal_nombre = models.CharField(max_length=100)
-    contacto_principal_vinculo = models.CharField(max_length=50)
-    contacto_principal_telefono = models.CharField(max_length=30)
+    tiene_condiciones_medicas = models.CharField(
+        max_length=15,
+        choices=RESPUESTAS,
+        default='no_informado'
+    )
+
+    condiciones_medicas = models.TextField(blank=True)
+
+    toma_medicacion = models.CharField(
+        max_length=15,
+        choices=RESPUESTAS,
+        default='no_informado'
+    )
+
+    medicacion_habitual = models.TextField(blank=True)
+    dosis_medicacion = models.TextField(blank=True)
+    frecuencia_medicacion = models.TextField(blank=True)
+
+    informacion_adicional = models.TextField(blank=True)
+
+    contacto_principal_nombre = models.CharField(
+        max_length=100
+    )
+
+    contacto_principal_vinculo = models.CharField(
+        max_length=50,
+        choices=VINCULOS
+    )
+
+    contacto_principal_otro_vinculo = models.CharField(
+        max_length=100,
+        blank=True
+    )
+
+    contacto_principal_telefono = models.CharField(
+        max_length=30
+    )
 
     contacto_secundario_nombre = models.CharField(
         max_length=100,
@@ -44,6 +98,12 @@ class CredencialMedica(models.Model):
 
     contacto_secundario_vinculo = models.CharField(
         max_length=50,
+        choices=VINCULOS,
+        blank=True
+    )
+
+    contacto_secundario_otro_vinculo = models.CharField(
+        max_length=100,
         blank=True
     )
 
@@ -52,7 +112,9 @@ class CredencialMedica(models.Model):
         blank=True
     )
 
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    fecha_actualizacion = models.DateTimeField(
+        auto_now=True
+    )
 
     def __str__(self):
         return f"Credencial médica de {self.usuario.username}"

@@ -13,4 +13,6 @@ urlpatterns = [
         name='logout'),
     
     path('perfil/', views.perfil, name='perfil'),
+    
+    path('credencial-medica/', views.credencial_medica, name='credencial_medica'),
 ]

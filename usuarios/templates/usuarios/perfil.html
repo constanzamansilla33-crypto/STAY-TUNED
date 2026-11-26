@@ -9,6 +9,14 @@
 
         <h1>MI PERFIL</h1>
 
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mensaje-solicitud {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <div class="perfil-datos">
             <h2>{{ user.get_full_name|default:user.username }}</h2>
 
@@ -23,6 +31,43 @@
                 <strong>Miembro desde</strong>
                 <p>{{ user.date_joined|date:"d/m/Y" }}</p>
             </div>
+        </div>
+
+        <div class="perfil-credencial">
+            <h2>Credencial médica</h2>
+
+            {% if user.credencial_medica %}
+
+                <span class="credencial-completa">
+                    ✓ Credencial registrada
+                </span>
+
+                <p>
+                    Última actualización:
+                    {{ user.credencial_medica.fecha_actualizacion|date:"d/m/Y - H:i" }}
+                </p>
+
+                <a href="{% url 'credencial_medica' %}"
+                   class="boton-perfil">
+                    EDITAR CREDENCIAL
+                </a>
+
+            {% else %}
+
+                <span class="credencial-pendiente">
+                    Credencial pendiente
+                </span>
+
+                <p>
+                    Completá tu información de emergencia.
+                </p>
+
+                <a href="{% url 'credencial_medica' %}"
+                   class="boton-perfil">
+                    COMPLETAR CREDENCIAL
+                </a>
+
+            {% endif %}
         </div>
 
     </div>

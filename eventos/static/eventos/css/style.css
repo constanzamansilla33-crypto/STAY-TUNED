@@ -1082,3 +1082,172 @@ footer {
 .enlace-cuenta a:hover {
     text-decoration: underline;
 }
+
+.credencial-container [hidden] {
+    display: none !important;
+}
+
+.credencial-container {
+    max-width: 700px;
+}
+
+.titulo-credencial {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--blanco);
+    margin-top: 30px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--borde);
+}
+
+.credencial-container select,
+.credencial-container textarea {
+    width: 100%;
+    padding: 14px;
+    background: var(--fondo);
+    color: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.credencial-container textarea {
+    resize: vertical;
+    min-height: 70px;
+}
+
+.credencial-container select:focus,
+.credencial-container textarea:focus {
+    outline: 2px solid var(--rojo);
+    outline-offset: 1px;
+}
+
+.boton-agregar-contacto {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0 25px;
+    background: transparent;
+    color: var(--rojo);
+    border: 1px dashed var(--rojo);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.boton-agregar-contacto:hover {
+    background: var(--rojo);
+    color: #FFFFFF;
+}
+
+.credencial-container [hidden] {
+    display: none !important;
+}
+
+@media (max-width: 600px) {
+    .titulo-credencial {
+        font-size: 17px;
+    }
+}
+
+.perfil-datos {
+    margin-top: 25px;
+}
+
+.perfil-datos > p {
+    color: var(--gris);
+}
+
+.dato-perfil {
+    margin-top: 20px;
+}
+
+.dato-perfil p {
+    color: var(--gris);
+}
+
+.perfil-credencial {
+    margin-top: 30px;
+    padding: 20px;
+    background: var(--fondo);
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+}
+
+.perfil-credencial h2 {
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.perfil-credencial p {
+    color: var(--gris);
+    font-size: 14px;
+    margin-top: 12px;
+}
+
+.credencial-completa {
+    color: #22A06B;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.credencial-pendiente {
+    color: var(--naranja);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.boton-perfil {
+    display: block;
+    margin-top: 20px;
+    padding: 14px;
+    background: var(--rojo);
+    color: #FFFFFF;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+    transition: 0.2s ease;
+}
+
+.boton-perfil:hover {
+    opacity: 0.85;
+}
+
+.alerta-formulario {
+    background: rgba(255, 56, 56, 0.08);
+    border: 1px solid var(--rojo);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 25px;
+}
+
+.alerta-formulario strong {
+    color: var(--rojo);
+    font-size: 15px;
+}
+
+.alerta-formulario p {
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.campo-invalido label {
+    color: var(--rojo);
+}
+
+.campo-invalido input,
+.campo-invalido select,
+.campo-invalido textarea {
+    border: 2px solid var(--rojo);
+}
+
+.campo-invalido .error-campo {
+    color: var(--rojo);
+    font-weight: 600;
+}
