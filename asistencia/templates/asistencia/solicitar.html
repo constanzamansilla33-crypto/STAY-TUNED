@@ -161,3 +161,20 @@
 </section>
 
 {% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const primerError = document.querySelector(
+            ".formulario-asistencia .error-campo"
+        );
+
+        if (primerError) {
+            primerError.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+        }
+    });
+</script>
+{% endblock %}
