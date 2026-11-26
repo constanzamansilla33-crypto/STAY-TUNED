@@ -24,24 +24,24 @@
     <form method="GET" action="{% url 'inicio' %}#eventos"
       class="buscador-eventos">
 
-    <input
-        type="search"
-        name="buscar"
-        value="{{ busqueda }}"
-        placeholder="Buscar evento o artista..."
-        aria-label="Buscar evento o artista"
-    >
+        <input
+            type="search"
+            name="buscar"
+            value="{{ busqueda }}"
+            placeholder="Buscar evento o artista..."
+            aria-label="Buscar evento o artista"
+        >
 
-    <button type="submit">Buscar</button>
+        <button type="submit">Buscar</button>
 
-    {% if busqueda %}
-        <a href="{% url 'inicio' %}#eventos"
-           class="limpiar-busqueda">
-            Limpiar
-        </a>
-    {% endif %}
+        {% if busqueda %}
+            <a href="{% url 'inicio' %}#eventos"
+               class="limpiar-busqueda">
+                Limpiar
+            </a>
+        {% endif %}
 
-</form>
+    </form>
 
     <div class="lista-eventos">
         {% for evento in eventos %}
@@ -78,14 +78,14 @@
 
             </article>
         {% empty %}
-    <p class="sin-eventos">
-        {% if busqueda %}
-            No se encontraron eventos para "{{ busqueda }}".
-        {% else %}
-            Todavía no hay eventos disponibles.
-        {% endif %}
-    </p>
-{% endfor %}
+            <p class="sin-eventos">
+                {% if busqueda %}
+                    No se encontraron eventos para "{{ busqueda }}".
+                {% else %}
+                    Todavía no hay eventos disponibles.
+                {% endif %}
+            </p>
+        {% endfor %}
     </div>
 </section>
 

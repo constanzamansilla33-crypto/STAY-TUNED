@@ -282,7 +282,7 @@ footer {
     line-height: 1.7;
 }
 
-/* CUENTA REGRESIVA */
+
 
 .cuenta-regresiva {
     text-align: center;
@@ -374,17 +374,13 @@ footer {
     margin: 25px auto;
 }
 
-#eventos {
-    scroll-margin-top: 15px;
-}
+
 
 #inicio {
     scroll-margin-top: 0;
 }
 
-/* ==============================
-   ACCESO A ASISTENCIA
-============================== */
+
 
 .asistencia-destacada {
     width: 84%;
@@ -459,9 +455,7 @@ footer {
 }
 
 
-/* ==============================
-   MAPA DEL RECINTO
-============================== */
+
 
 .mapa-recinto {
     width: 84%;
@@ -562,9 +556,7 @@ footer {
     }
 }
 
-/* ==============================
-   FORMULARIO DE ASISTENCIA
-============================== */
+
 
 .solicitud-pagina {
     min-height: 75vh;
@@ -606,7 +598,7 @@ footer {
     margin: 0 auto;
 }
 
-/* OPCIONES */
+
 
 .grupo-opciones {
     border: none;
@@ -700,7 +692,7 @@ footer {
     display: block;
 }
 
-/* CAMPOS */
+
 
 .campo-asistencia {
     margin-bottom: 25px;
@@ -748,7 +740,7 @@ footer {
     margin-top: 8px;
 }
 
-/* BOTÓN DE ENVÍO */
+
 
 .boton-enviar-asistencia {
     width: 100%;
@@ -778,7 +770,7 @@ footer {
     font-size: 22px;
 }
 
-/* MENSAJES */
+
 
 .mensaje-solicitud {
     padding: 14px 18px;
@@ -800,7 +792,7 @@ footer {
     color: var(--rojo);
 }
 
-/* VOLVER */
+
 
 .volver-evento {
     display: block;
@@ -816,7 +808,7 @@ footer {
     color: var(--rojo);
 }
 
-/* CELULARES */
+
 
 @media (max-width: 600px) {
 
@@ -1083,9 +1075,7 @@ footer {
     text-decoration: underline;
 }
 
-.credencial-container [hidden] {
-    display: none !important;
-}
+
 
 .credencial-container {
     max-width: 700px;
@@ -1144,9 +1134,7 @@ footer {
     color: #FFFFFF;
 }
 
-.credencial-container [hidden] {
-    display: none !important;
-}
+
 
 @media (max-width: 600px) {
     .titulo-credencial {
